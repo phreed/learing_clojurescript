@@ -16,3 +16,18 @@
          '[pandeiro.boot-http :refer [serve]]
          '[adzerk.boot-reload :refer [reload]]
          '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]])
+
+(deftask dev
+  "Launch Immediate Feedback Development Environment."
+   ;; Generally the order of these tasks is not that
+   ;; important except in those cases where the
+   ;; fileset is augmented with new stuff.
+   ;; A good case of this is the cljs-repl.
+  []
+  (comp
+   (serve :dir "target")
+   (watch)
+   (reload)
+   (cljs-repl) ;; before cljs task
+   (cljs)
+   (target :dir #{"target"})))
