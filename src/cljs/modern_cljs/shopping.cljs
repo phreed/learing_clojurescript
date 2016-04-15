@@ -1,22 +1,21 @@
 (ns modern-cljs.shopping
-   (:require [domina.core :as dc]))
+   (:require [domina.core :as dom]
+             [domina.events :as evt]))
 
 (defn calculate
   "calculate the total, return false to prevent submission
    of the data to the server."[]
-  (let [quantity (-> "quantity" dc/by-id dc/value)
-        price (-> "price" dc/by-id dc/value)
-        tax (-> "tax" dc/by-id dc/value)
-        discount (-> "discount" dc/by-id dc/value)]
-     (dc/set-value! (dc/by-id "total")
+  (let [quantity (-> "quantity" dom/by-id dom/value)
+        price (-> "price" dom/by-id dom/value)
+        tax (-> "tax" dom/by-id dom/value)
+        discount (-> "discount" dom/by-id dom/value)]
+     (dom/set-value! (dom/by-id "total")
           (-> (* quantity price)
               (* (+ 1 (/ tax 100)))
               (- discount)
-              (.toFixed 2)))
-     false))
+              (.toFixed 2)))))
 
 (defn ^:export init []
    (if (and js/document
             (.-getElementById js/document))
-      (let [the-form (.getElementById js/document "shoppingForm")]
-        (set! (.-onsubmit the-form) calculate))))
+      (evt/capture! (dom/by-id "calc") :click calculate)))
