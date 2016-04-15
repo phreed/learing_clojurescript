@@ -5,4 +5,4 @@
 (enable-console-print!)
 
 ;; print to the console
-(println "evening you mean, World!")
+(println "evening you lovely, World!")

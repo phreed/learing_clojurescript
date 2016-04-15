@@ -15,10 +15,8 @@
               (.toFixed 2)))
      false))
 
-(defn init []
-   (if (and js/document)
-       (.-getElementById js/document)
+(defn ^:export init []
+   (if (and js/document
+            (.-getElementById js/document))
       (let [the-form (.getElementById js/document "shoppingForm")]
         (set! (.-onsubmit the-form) calculate))))
-
-(set! (.-onload js/window) init)
