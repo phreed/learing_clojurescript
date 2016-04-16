@@ -12,7 +12,8 @@
       [com.cemerick/piggieback "0.2.1" :scope "test"]
       [weasel "0.7.0" :scope "test"]
       [org.clojure/tools.nrepl "0.2.12" :scope "test"]
-      [org.clojars.magomimmo/domina "2.0.0-SNAPSHOT"]])
+      [org.clojars.magomimmo/domina "2.0.0-SNAPSHOT"]
+      [hiccups "0.3.0"]])
 
 (require '[adzerk.boot-cljs :refer [cljs]]
          '[pandeiro.boot-http :refer [serve]]

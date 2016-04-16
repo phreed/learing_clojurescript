@@ -1,13 +1,16 @@
 (ns modern-cljs.login
-   (:require [domina.core :as dc]))
+   (:require [domina.core :as dom]
+             [domina.events :as evt]
+             [hiccups.runtime])
+   (:require-macros [hiccups.core :refer [html]]))
 
 ;; define the function to be attached to form submission event
 (defn validate-form []
   ;; get email and password element from their ids in the HTML form
-  (let [email (dc/by-id "email")
-        password (dc/by-id "password")]
-    (if (and (> (count (dc/value email)) 0)
-             (> (count (dc/value password)) 0))
+  (let [email (dom/by-id "email")
+        password (dom/by-id "password")]
+    (if (and (> (count (dom/value email)) 0)
+             (> (count (dom/value password)) 0))
       true
       (do (js/alert "Please, complete the form!")
           false))))
@@ -18,8 +21,15 @@
   ;; verify that js/document exists and that
   ;; it has a getElementById property
   (if (and js/document
-           (.-getElementById js/document))
+           (aget js/document "getElementById"))
     ;; get loginForm by element id and set its onsubmit property to
     ;; our validate-form function
-    (let [login-form (.getElementById js/document "loginForm")]
-      (set! (.-onsubmit login-form) validate-form))))
+    (let [validate (dom/by-id "validate")]
+      (evt/listen! validate :click validate-form)
+      (evt/listen! validate :mouseover
+          (fn [] (dom/append!
+                   (dom/by-id "loginForm")
+                   (html [:div {:class "help"} "Click to submit"]))))
+      (evt/listen! validate :mouseout
+          (fn [] (dom/destroy!
+                   (dom/by-class "help")))))))

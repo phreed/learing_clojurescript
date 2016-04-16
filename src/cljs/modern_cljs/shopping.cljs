@@ -1,6 +1,8 @@
 (ns modern-cljs.shopping
    (:require [domina.core :as dom]
-             [domina.events :as evt]))
+             [domina.events :as evt]
+             [hiccups.runtime])
+   (:require-macros [hiccups.core :refer [html]]))
 
 (defn calculate
   "calculate the total, return false to prevent submission
@@ -16,6 +18,13 @@
               (.toFixed 2)))))
 
 (defn ^:export init []
-   (if (and js/document
-            (.-getElementById js/document))
-      (evt/capture! (dom/by-id "calc") :click calculate)))
+   (when (and js/document
+            (aget js/document "getElementById"))
+      (let [calc (dom/by-id "calc")]
+        (evt/listen! calc :click calculate)
+        (evt/listen! calc :mouseover
+           (fn [] (dom/append!
+                    (dom/by-id "shoppingForm")
+                    (html [:div {:class "help"} "Click to calculate"]))))
+        (evt/listen! calc :mouseout
+           (fn [] (dom/destroy! (dom/by-class "help")) calculate)))))
